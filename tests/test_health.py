@@ -1,4 +1,4 @@
-"""Pruebas de disponibilidad de la API."""
+"""Availability tests for the API."""
 
 from fastapi.testclient import TestClient
 

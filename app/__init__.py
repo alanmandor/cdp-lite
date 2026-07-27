@@ -1,1 +1,1 @@
-"""Paquete principal de CDP Lite."""
+"""CDP Lite application package."""
