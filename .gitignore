@@ -1,0 +1,13 @@
+# Entorno virtual y cachés de Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Datos locales
+*.db
+
+# Archivos del sistema y del editor
+.DS_Store
+.vscode/
