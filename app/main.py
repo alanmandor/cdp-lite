@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from app import models  # noqa: F401
 from app.db import Base, engine
+from app.routers.events import router as events_router
 from app.routers.profiles import router as profiles_router
 
 
@@ -23,6 +24,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(profiles_router)
+app.include_router(events_router)
 
 
 @app.get("/health", tags=["system"])
