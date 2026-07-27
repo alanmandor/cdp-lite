@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from app import models  # noqa: F401
 from app.db import Base, engine
+from app.routers.profiles import router as profiles_router
 
 
 @asynccontextmanager
@@ -21,6 +22,7 @@ app = FastAPI(
     description="A minimal API for managing customer profiles, events, and segments.",
     lifespan=lifespan,
 )
+app.include_router(profiles_router)
 
 
 @app.get("/health", tags=["system"])
