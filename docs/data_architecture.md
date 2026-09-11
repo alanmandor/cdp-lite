@@ -94,6 +94,12 @@ The grain of `fact_customer_event` is **one row per customer event**. Defining t
 3. It creates the customer-event link and only adds satellite versions when the hash diff changes.
 4. A mart load builds Type 2 customer history and event facts from the vault.
 
+## MVP Vault Load
+
+The MVP exposes `POST /warehouse/vault/load` to run the operational-to-vault load explicitly. The response reports how many hubs, links, and satellite versions were created.
+
+The load is idempotent: running it again without source changes creates no new records. This is achieved by deterministic SHA-256 hash keys for hubs and links, plus `hash_diff` comparisons for satellites. In production, this endpoint would be replaced or triggered by a scheduled orchestration job.
+
 ## Interview Summary
 
 Use this concise explanation:

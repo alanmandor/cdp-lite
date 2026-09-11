@@ -4,11 +4,12 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app import models  # noqa: F401
+from app import models, vault_models  # noqa: F401
 from app.db import Base, engine
 from app.routers.events import router as events_router
 from app.routers.profiles import router as profiles_router
 from app.routers.segments import router as segments_router
+from app.routers.warehouse import router as warehouse_router
 
 
 @asynccontextmanager
@@ -27,6 +28,7 @@ app = FastAPI(
 app.include_router(profiles_router)
 app.include_router(events_router)
 app.include_router(segments_router)
+app.include_router(warehouse_router)
 
 
 @app.get("/health", tags=["system"])

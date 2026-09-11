@@ -46,3 +46,13 @@ class CustomerEventRead(BaseModel):
     event_type: str
     event_data: dict[str, Any]
     occurred_at: datetime
+
+
+class VaultLoadReport(BaseModel):
+    """Counts of Data Vault records created by one load run."""
+
+    hub_customers_created: int
+    hub_events_created: int
+    customer_event_links_created: int
+    customer_satellites_created: int
+    event_satellites_created: int
