@@ -31,6 +31,8 @@ SQLAlchemy (models and queries)
 SQLite (cdp_lite.db)
 ```
 
+For analytics, the project also evolves data through a Data Vault layer into a Kimball star schema. The operational API remains independent from reporting concerns. See [the data architecture](docs/data_architecture.md) for the model, grains, and loading sequence.
+
 The application will be organized as follows:
 
 ```text
@@ -40,6 +42,7 @@ app/
   models.py        # persistence models
   schemas.py       # API request and response contracts
   routers/         # endpoints grouped by domain
+docs/              # architecture and modeling decisions
 tests/             # automated tests
 requirements.txt   # pinned dependencies
 ```
@@ -102,5 +105,5 @@ Dependency versions are pinned in `requirements.txt` so every contributor instal
 
 ## Next Steps
 
-1. Configure SQLite and create the customer profile model.
-2. Implement profiles, events, and segments with their tests.
+1. Implement Data Vault hubs, links, and satellites from operational profiles and events.
+2. Build the Kimball customer-event mart from the Data Vault.
