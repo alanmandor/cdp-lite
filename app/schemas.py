@@ -56,3 +56,12 @@ class VaultLoadReport(BaseModel):
     customer_event_links_created: int
     customer_satellites_created: int
     event_satellites_created: int
+
+
+class MartLoadReport(BaseModel):
+    """Counts of Kimball rows created by one mart load run."""
+
+    customer_dimension_rows_created: int
+    event_type_dimension_rows_created: int
+    date_dimension_rows_created: int
+    event_facts_created: int

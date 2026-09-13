@@ -100,6 +100,12 @@ The MVP exposes `POST /warehouse/vault/load` to run the operational-to-vault loa
 
 The load is idempotent: running it again without source changes creates no new records. This is achieved by deterministic SHA-256 hash keys for hubs and links, plus `hash_diff` comparisons for satellites. In production, this endpoint would be replaced or triggered by a scheduled orchestration job.
 
+## MVP Kimball Load
+
+After a successful vault load, `POST /warehouse/mart/load` builds the customer-event mart. It creates a Type 2 customer dimension row for each new customer-profile satellite version, reusable event-type and date dimensions, and one fact row for each event hub.
+
+The mart load is also idempotent. `hub_event_key` is the fact's durable event identifier, so an event is not inserted twice. The customer dimension carries the originating satellite load timestamp, which provides lineage from a dimension row back to its Data Vault version.
+
 ## Interview Summary
 
 Use this concise explanation:
