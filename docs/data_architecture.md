@@ -106,6 +106,10 @@ After a successful vault load, `POST /warehouse/mart/load` builds the customer-e
 
 The mart load is also idempotent. `hub_event_key` is the fact's durable event identifier, so an event is not inserted twice. The customer dimension carries the originating satellite load timestamp, which provides lineage from a dimension row back to its Data Vault version.
 
+## Analytics Consumption
+
+`GET /analytics/event-summary` reads only `fact_customer_event`, `dim_date`, and `dim_event_type`. It returns daily event counts by event type and accepts optional `start_date` and `end_date` filters. This demonstrates the value of the mart: business-facing aggregation does not need to understand operational tables, hubs, links, or satellites.
+
 ## Interview Summary
 
 Use this concise explanation:

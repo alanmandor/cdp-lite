@@ -166,5 +166,6 @@ def get_or_create_date(
             year_number=calendar_date.year,
         )
         db.add(date_dimension)
+        db.flush()
         report["date_dimension_rows_created"] += 1
     return date_dimension

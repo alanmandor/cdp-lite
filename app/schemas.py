@@ -1,6 +1,6 @@
 """Request and response schemas for the API."""
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -65,3 +65,11 @@ class MartLoadReport(BaseModel):
     event_type_dimension_rows_created: int
     date_dimension_rows_created: int
     event_facts_created: int
+
+
+class EventSummaryRead(BaseModel):
+    """Daily event count grouped by event type."""
+
+    calendar_date: date
+    event_type: str
+    event_count: int
