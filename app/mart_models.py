@@ -1,8 +1,9 @@
 """Kimball star-schema persistence models."""
 
 from datetime import date, datetime
+from decimal import Decimal
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -63,3 +64,5 @@ class FactCustomerEvent(Base):
     )
     date_key: Mapped[int] = mapped_column(ForeignKey("dim_date.date_key"), index=True)
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    purchase_amount: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    currency_code: Mapped[str | None] = mapped_column(String(3))

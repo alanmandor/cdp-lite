@@ -74,3 +74,45 @@ def test_event_summary_rejects_an_invalid_date_range(client: TestClient) -> None
 
     assert response.status_code == 400
     assert response.json()["detail"] == "start_date must be on or before end_date."
+
+
+def test_purchase_summary_aggregates_revenue_by_date_and_currency(
+    client: TestClient,
+) -> None:
+    profile_response = client.post(
+        "/profiles",
+        json={"external_id": "customer-123"},
+    )
+    assert profile_response.status_code == 201
+    for payload in [
+        {
+            "event_type": "purchase",
+            "event_data": {"amount": 49.99, "currency": "usd"},
+            "occurred_at": "2026-09-11T12:00:00Z",
+        },
+        {
+            "event_type": "purchase",
+            "event_data": {"amount": 25.00, "currency": "USD"},
+            "occurred_at": "2026-09-11T13:00:00Z",
+        },
+        {
+            "event_type": "page_view",
+            "occurred_at": "2026-09-11T14:00:00Z",
+        },
+    ]:
+        event_response = client.post("/profiles/customer-123/events", json=payload)
+        assert event_response.status_code == 201
+    assert client.post("/warehouse/vault/load").status_code == 200
+    assert client.post("/warehouse/mart/load").status_code == 200
+
+    response = client.get("/analytics/purchase-summary")
+
+    assert response.status_code == 200
+    assert response.json() == [
+        {
+            "calendar_date": "2026-09-11",
+            "currency_code": "USD",
+            "purchase_count": 2,
+            "revenue": "74.99",
+        },
+    ]

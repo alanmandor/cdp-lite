@@ -1,6 +1,7 @@
 """Request and response schemas for the API."""
 
 from datetime import date, datetime
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -73,3 +74,12 @@ class EventSummaryRead(BaseModel):
     calendar_date: date
     event_type: str
     event_count: int
+
+
+class PurchaseSummaryRead(BaseModel):
+    """Daily purchase count and revenue grouped by currency."""
+
+    calendar_date: date
+    currency_code: str
+    purchase_count: int
+    revenue: Decimal

@@ -1,6 +1,7 @@
 """Load Data Vault records into the Kimball customer-event mart."""
 
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -107,6 +108,10 @@ def load_event_facts(db: Session, report: dict[str, int]) -> None:
             event_satellite.occurred_at,
             report,
         )
+        purchase_amount, currency_code = extract_purchase_measure(
+            event_satellite.event_type,
+            event_satellite.event_data,
+        )
         db.add(
             FactCustomerEvent(
                 hub_event_key=link.hub_event_key,
@@ -114,6 +119,8 @@ def load_event_facts(db: Session, report: dict[str, int]) -> None:
                 event_type_key=event_type_dimension.event_type_key,
                 date_key=date_dimension.date_key,
                 occurred_at=event_satellite.occurred_at,
+                purchase_amount=purchase_amount,
+                currency_code=currency_code,
             ),
         )
         report["event_facts_created"] += 1
@@ -128,6 +135,30 @@ def latest_satellites_by_event(db: Session) -> dict[str, SatEventDetails]:
         ),
     ).all()
     return {satellite.hub_event_key: satellite for satellite in satellites}
+
+
+def extract_purchase_measure(
+    event_type: str,
+    event_data: dict[str, object],
+) -> tuple[Decimal | None, str | None]:
+    """Extract a valid monetary measure from a purchase event payload."""
+    if event_type != "purchase":
+        return None, None
+
+    raw_amount = event_data.get("amount")
+    if isinstance(raw_amount, bool):
+        return None, None
+    try:
+        amount = Decimal(str(raw_amount))
+    except (InvalidOperation, ValueError):
+        return None, None
+    if not amount.is_finite():
+        return None, None
+
+    raw_currency = event_data.get("currency")
+    if not isinstance(raw_currency, str) or len(raw_currency) != 3:
+        return None, None
+    return amount, raw_currency.upper()
 
 
 def get_or_create_event_type(

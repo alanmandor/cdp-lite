@@ -110,6 +110,8 @@ The mart load is also idempotent. `hub_event_key` is the fact's durable event id
 
 `GET /analytics/event-summary` reads only `fact_customer_event`, `dim_date`, and `dim_event_type`. It returns daily event counts by event type and accepts optional `start_date` and `end_date` filters. This demonstrates the value of the mart: business-facing aggregation does not need to understand operational tables, hubs, links, or satellites.
 
+`fact_customer_event` also stores the optional `purchase_amount` measure and `currency_code` from valid `purchase` payloads. `GET /analytics/purchase-summary` aggregates those measures by date and currency. Currency is part of the result grain, so amounts in different currencies are never summed together.
+
 ## Interview Summary
 
 Use this concise explanation:
