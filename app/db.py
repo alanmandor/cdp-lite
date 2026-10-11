@@ -1,12 +1,14 @@
 """Database configuration and session management."""
 
 from collections.abc import Generator
+from pathlib import Path
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 
-DATABASE_URL = "sqlite:///./cdp_lite.db"
+DATABASE_PATH = Path(__file__).resolve().parents[1] / "cdp_lite.db"
+DATABASE_URL = f"sqlite:///{DATABASE_PATH.as_posix()}"
 
 engine = create_engine(
     DATABASE_URL,

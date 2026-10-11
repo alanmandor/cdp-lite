@@ -105,5 +105,19 @@ Dependency versions are pinned in `requirements.txt` so every contributor instal
 
 ## Next Steps
 
-1. Implement Data Vault hubs, links, and satellites from operational profiles and events.
-2. Build the Kimball customer-event mart from the Data Vault.
+1. Add managed migrations and strengthen historical fact assignment.
+2. Add load monitoring, data-quality reporting, and a reproducible demo.
+
+## Local Workspace on Windows
+
+The working repository is `D:\Projects\cdp-lite`. Run commands from that directory:
+
+```powershell
+cd D:\Projects\cdp-lite
+.\.venv\Scripts\python.exe scripts\upgrade_local_db.py
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+SQLite is located at the repository root regardless of the terminal's working directory. The upgrade script backs up older databases before adding missing revenue columns. Existing fact revenue remains null until a separate backfill is implemented.
+
+The implemented pipeline is operational API → Data Vault → Kimball. Run `POST /warehouse/vault/load`, followed by `POST /warehouse/mart/load`, then query `/analytics/event-summary` or `/analytics/purchase-summary`. Customer history is available at `/analytics/customer-history/{external_id}`.
