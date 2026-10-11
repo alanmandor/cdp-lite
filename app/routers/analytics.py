@@ -7,11 +7,26 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.mart_models import DimDate, DimEventType, FactCustomerEvent
-from app.schemas import EventSummaryRead, PurchaseSummaryRead
+from app.mart_models import DimCustomer, DimDate, DimEventType, FactCustomerEvent
+from app.schemas import CustomerHistoryRead, EventSummaryRead, PurchaseSummaryRead
 
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
+
+
+@router.get("/customer-history/{external_id}", response_model=list[CustomerHistoryRead])
+def get_customer_history(
+    external_id: str,
+    db: Session = Depends(get_db),
+) -> list[DimCustomer]:
+    """Return Type 2 dimension versions for one customer."""
+    return list(
+        db.scalars(
+            select(DimCustomer)
+            .where(DimCustomer.external_id == external_id)
+            .order_by(DimCustomer.effective_from),
+        ),
+    )
 
 
 @router.get("/event-summary", response_model=list[EventSummaryRead])

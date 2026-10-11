@@ -38,3 +38,19 @@ def test_get_profile_returns_not_found_for_unknown_external_id(client: TestClien
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Profile not found."
+
+
+def test_update_profile_changes_mutable_attributes(client: TestClient) -> None:
+    client.post(
+        "/profiles",
+        json={"external_id": "customer-123", "email": "old@example.com"},
+    )
+
+    response = client.put(
+        "/profiles/customer-123",
+        json={"email": "new@example.com", "first_name": "Alice"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["email"] == "new@example.com"
+    assert response.json()["first_name"] == "Alice"

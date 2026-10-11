@@ -112,6 +112,10 @@ The mart load is also idempotent. `hub_event_key` is the fact's durable event id
 
 `fact_customer_event` also stores the optional `purchase_amount` measure and `currency_code` from valid `purchase` payloads. `GET /analytics/purchase-summary` aggregates those measures by date and currency. Currency is part of the result grain, so amounts in different currencies are never summed together.
 
+## Type 2 Customer History Demonstration
+
+`PUT /profiles/{external_id}` changes mutable operational attributes. The next vault load compares the new profile attributes to the latest customer satellite `hash_diff`; a difference creates a new satellite version. The subsequent mart load closes the old `dim_customer` row (`effective_to` and `is_current = false`) and inserts the replacement version. `GET /analytics/customer-history/{external_id}` exposes those Kimball versions for inspection.
+
 ## Interview Summary
 
 Use this concise explanation:

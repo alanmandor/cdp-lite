@@ -29,6 +29,14 @@ class CustomerProfileRead(BaseModel):
     created_at: datetime
 
 
+class CustomerProfileUpdate(BaseModel):
+    """Mutable customer-profile attributes."""
+
+    email: str | None = Field(default=None, max_length=255)
+    first_name: str | None = Field(default=None, max_length=100)
+    last_name: str | None = Field(default=None, max_length=100)
+
+
 class CustomerEventCreate(BaseModel):
     """Data accepted when recording a customer event."""
 
@@ -83,3 +91,17 @@ class PurchaseSummaryRead(BaseModel):
     currency_code: str
     purchase_count: int
     revenue: Decimal
+
+
+class CustomerHistoryRead(BaseModel):
+    """A Type 2 customer-dimension version."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    external_id: str
+    email: str | None
+    first_name: str | None
+    last_name: str | None
+    effective_from: datetime
+    effective_to: datetime | None
+    is_current: bool
